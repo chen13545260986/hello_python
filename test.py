@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# 向sys模块借一个exit函数用来退出程序
-from sys import exit
-# 导入pygame库
-import pygame
+
+# 导入库
+import pygame,sys
 # 导入一些常用的函数和常量
 from pygame.locals import *
 
@@ -14,7 +13,8 @@ fish_img = 'images/fugu.png'
 pygame.init()
 
 # 创建了一个窗口
-screen = pygame.display.set_mode((640, 480), RESIZABLE, 32)
+screen = pygame.display.set_mode((640, 480), 0, 32)
+
 # 设置窗口标题
 pygame.display.set_caption("Hello, World!")
 
@@ -27,7 +27,8 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             # 接收到退出事件后退出程序
-            exit()
+            pygame.quit()
+            sys.exit()
 
     # 将背景图画上去
     screen.blit(background, (0, 0))
