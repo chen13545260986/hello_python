@@ -18,6 +18,8 @@ pygame.display.set_caption('Font')
 
 filename = 'font/Arial Black.TTF'
 size = 50
+
+# 获取字体对象
 font = pygame.font.Font(filename, size)
 
 # 定义颜色
@@ -39,7 +41,7 @@ while flag:
     rect.center = (random.randint(0, 500), random.randint(0, 400))
 
     # 设置背景
-    screen.fill(WHITE)
+    screen.fill(BLACK)
 
     # 绘制字体
     screen.blit(text, rect)
