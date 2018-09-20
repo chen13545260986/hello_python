@@ -1,0 +1,8 @@
+file = open('hello.txt', 'r+')
+print(file.closed)
+print(file.mode)
+print(file.name)
+# file.seek(0, 0)
+# file.write('i am jenny')
+print(file.read())
+file.close()
