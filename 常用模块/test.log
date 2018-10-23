@@ -1,0 +1,6 @@
+2018-09-27 17:29:03,676 - root - WARNING [line:39] : 警告错误
+2018-09-27 17:29:03,676 - root - ERROR [line:40] : error message
+2018-09-27 17:29:03,676 - root - CRITICAL [line:41] : critical message
+2018-09-27 17:30:05,179 - root - WARNING [line:39] : 警告错误
+2018-09-27 17:30:05,179 - root - ERROR [line:40] : error message
+2018-09-27 17:30:05,179 - root - CRITICAL [line:41] : critical message
