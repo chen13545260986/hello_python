@@ -1,0 +1,3 @@
+1、爬虫用到的模块
+    requests:伪造浏览器发起Http请求
+    bs4/beautiful:将html格式的字符串解析成对象，obj.find/find_all

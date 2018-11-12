@@ -1,0 +1,332 @@
+s9day125 
+
+内容回顾：
+	第一部分：爬虫
+		1. requests和bs4 基础
+		
+		2. web知识
+			- 请求和响应：
+				- 请求：
+					"GET /index http1.1\r\nhost:c1.com\r\nContent-type:asdf\r\nUser-Agent:aa\r\nreferer:www.xx.com;cookie:k1=v1;k2=v2;\r\n\r\n"
+				- 响应：
+					"HTTP/1.1 200 \r\nSet-Cookies:k1=v1;k2=v2,Connection:Keep-Alive\r\nContent-Encoding:gzip\r\n\r\n<html>asdfasdfasdfasdfdf</html>"
+			- 携带常见请求头
+				- user-agent
+				- referer
+				- host 
+				- content-type 
+				- cookie 
+			- csrf
+				- 原因1：
+					- 需要浏览器+爬虫先访问登录页面，获取token，然后再携带token去访问。
+				- 原因2：
+					- 两个tab打开的同事，其中一个tab诱导你对另外一个tab提交非法数据。
+		3. 分析Http请求
+			- chrome
+		4. 套路
+			- 汽车之家
+			- 抽屉
+			- 抽屉登录 
+			- github 
+			- 拉钩 
+			- web微信 
+				- 不要相信他让你做的事
+				- XML
+					- 数据交换
+					- 配置文件（java）
+	第二部分：并发和网络编程
+		1. OSI 7层模型
+		
+		2. 三次握手、四次挥手？
+		
+		3. TCP和UDP区别？
+		
+		4. 路由器和交换机的区别？
+		
+		5. ARP协议？
+		
+		6. DNS解析？
+		
+		7. Http和Https？
+		
+		8. 进程、线程、协程区别？
+		
+		9. GIL锁
+		
+		10. 进程如何进程共享？
+	
+	
+	
+	
+			
+今日内容：
+	- web微信
+		- 获取联系人列表
+		- 发送消息
+	- scrapy框架	
+	
+	
+内容详细：
+	- web微信
+		- 获取联系人列表 
+		- 获取头像 
+		- 发送消息 
+		
+		关系发送消息：
+			data:
+				request.post(
+					url='xx',
+					data={'k1':'v1,'k2':'v2'}
+				)
+				#数据：  POST /  http1.1\r\n....\r\n\r\nk1=v1&k2=v2
+				
+				
+				request.post(
+					url='xx',
+					data=json.dumps({'k1':'v1,'k2':'v2'})
+				)
+				#数据：  POST /  http1.1\r\n....\r\n\r\n{'k1':'v1,'k2':'v2'}
+				
+				request.post(
+					url='xx',
+					data=b'asdfasdf'
+				)
+				#数据：  POST /  http1.1\r\n....\r\n\r\n'asdfasdf'
+			json:
+				request.post(
+					url='xx',
+					json={'k1':'v1,'k2':'v2'}
+				)
+				#数据：  POST /  http1.1\r\nContent-type:application/json....\r\n\r\n{'k1':'v1,'k2':'v2'}
+	
+			问题：
+				同时：POST请求发数据
+				
+				django：获取不到值？request.POST 
+				
+				发送数据格式：
+					方式一：
+						request.post(
+							url='xx',
+							data={'k1':'v1,'k2':'v2'}
+						)
+						#数据：  POST /  http1.1\r\nContent-type:urlencode-form.......\r\n\r\nk1=v1&k2=v2
+		
+						
+						request.POST必然可以获取到值。
+							- content-type: urlencode-form
+							- 数据格式：k1=v1&k2=v2
+	
+					方式二：
+						request.post(
+							url='xx',
+							json={'k1':'v1,'k2':'v2'}
+						)
+						#数据：  POST /  http1.1\r\nContent-type:application/json....\r\n\r\n{'k1':'v1,'k2':'v2'}
+						request.body 
+							字节 = {'k1':'v1,'k2':'v2'}
+							字节转换字符串
+							反序列化字符串 -> 字典 
+						
+						request.POST必然不可以获取到值。
+							- content-type: urlencode-form
+							- 数据格式：k1=v1&k2=v2
+						
+				
+			知识点：
+				chrome->
+					Form Data:
+						phone=861513125555&password=12312312312&oneMonth=1
+						
+						reqeusts.post(
+							url=url,
+							data={
+								phone:123123123123,
+								password:asdfasdf
+							}
+						)
+					
+					Request Payload:
+						{"BaseRequest":{"Uin":981579400,"Sid":"zWvteTWqBop4heoT","Skey":"@crypt_2ccf8ab9_a710cf413c932e201987599558063c8e","DeviceID":"e358217921593270"},"Msg":{"Type":1,"Content":"test","FromUserName":"@60eef3f2d212721fda0aae891115aa7a","ToUserName":"@@6a5403f510a3192454ed1afebd78ec6033d5057c9038d7b943b201f0a74987d4","LocalID":"15300708105840758","ClientMsgId":"15300708105840758"},"Scene":0}
+					
+						reqeusts.post(
+							url=url,
+							json={
+								phone:123123123123,
+								password:asdfasdf
+							}
+						)
+						
+						reqeusts.post(
+							url=url,
+							data=bytes(json.dumps({
+								phone:123123123123,
+								password:asdfasdf
+							}),encoding=utf-8)
+						)
+	
+	
+				firefox:
+					表单数据:
+						
+					JSON:
+						
+	
+	
+		目标：练习分析Http请求能力
+			
+		
+	- scrapy框架 
+		介绍：大而全的爬虫组件。
+		
+		安装：
+			- Win:
+				下载：http://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted
+				
+				pip3 install wheel 
+				pip install Twisted‑18.4.0‑cp36‑cp36m‑win_amd64.whl
+				
+				pip3 install pywin32
+				
+				pip3 install scrapy 
+			- Linux:
+				pip3 install scrapy 
+	
+	
+		使用：
+			Django:
+				# 创建project
+				django-admin startproject mysite 
+				
+				cd mysite
+				
+				# 创建app
+				python manage.py startapp app01 
+				python manage.py startapp app02 
+				
+				# 启动项目
+				python manage.runserver 
+				
+			Scrapy：
+				# 创建project
+				scrapy  startproject xdb 
+				
+				cd xdb 
+				
+				# 创建爬虫
+				scrapy genspider chouti chouti.com 
+				scrapy genspider cnblogs cnblogs.com 
+				
+				# 启动爬虫
+				scrapy crawl chouti
+	
+			
+			
+			
+			1. 创建project
+				scrapy startproject 项目名称
+				
+				项目名称
+				   项目名称/
+						- spiders				# 爬虫文件 
+							- chouti.py 
+							- cnblgos.py 
+							....
+						- items.py 				# 持久化
+						- pipelines				# 持久化
+						- middlewares.py		# 中间件
+						- settings.py 			# 配置文件（爬虫）
+				   scrapy.cfg					# 配置文件（部署）
+			
+			2. 创建爬虫 
+				cd 项目名称
+				
+				scrapy genspider chouti chouti.com 
+				scrapy genspider cnblgos cnblgos.com 
+				
+			3. 启动爬虫
+				scrapy crawl chouti 
+				scrapy crawl chouti --nolog 
+				
+					
+		
+		总结：
+			- HTML解析：xpath
+			- 再次发起请求：yield Request对象
+			
+		
+	
+作业：
+	1. 面试题
+	2. SQL
+	3. 微信：
+		- 联系人
+		- 发送消息
+	4. scrapy 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

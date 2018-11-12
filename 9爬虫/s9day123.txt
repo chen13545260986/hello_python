@@ -1,0 +1,275 @@
+s9day123 
+
+内容回顾：
+	第一部分：Flask
+		1. flask上下文管理机制
+
+			切记：不要说详细
+		2. Local的作用？
+		
+		3. LocalStack维护成栈
+		
+		4. 视图函数中使用：request/session/g/current_app
+			
+			注意：请求上下文和应用上下文需要先放入Local中，才能获取到。
+				# by luffycity.com
+
+				from flask import Flask,current_app,request,session,g
+
+
+				app = Flask(__name__)
+
+				# 错误
+				# print(current_app.config)
+
+				@app.route('/index')
+				def index():
+					# 正确
+					print(current_app.config)
+					
+					return "Index"
+
+				if __name__ == '__main__':
+					app.run()
+
+		5. 离线脚本
+		
+			from chun import db,create_app
+			from flask import current_app
+
+			# 错误
+			# print(current_app.config)
+
+			# app = create_app()
+			# app_ctx = app.app_context()
+			# with app_ctx:
+			#     # 正确
+			#     print(current_app.config)
+	
+	第二部分：面向对象
+		1. 谈谈你对面向对象的认识。
+		
+		2. 约束 
+			Java: 
+				- 接口，约子类中必须包含某个方法（约束）。
+					Interface IMessage:
+						def func1(self):
+							pass 
+						def func2(self):
+							pass 
+							
+					class Msg(IMessage):
+						def func1(self):
+							print('func1') 
+						def func2(self):
+							print('func1') 
+				
+				- 抽象方法/抽象类，约子类中必须包含某个方法。(约束+继承)
+					class abstract IMessage:
+						def abstract func1(self):
+							pass 
+						def abstract func2(self):
+							pass 
+						
+						def func3(self):
+							print('asdfasdf') 
+							
+					class Msg(IMessage):
+						def func1(self):
+							print('func1') 
+						def func2(self):
+							print('func1') 
+			
+			Python：
+				- 接口（无）
+				- 抽象方法/抽象类（有，ABC）
+				
+				- 类继承+异常
+					
+					class IMessage(object):
+
+						def func1(self):
+							raise NotImplementedError('子类没有实现func1方法')
+
+
+					class Msg(IMessage):
+						def func1(self):
+							print('123')
+
+
+					obj = Msg()
+					obj.func1()
+					
+			有什么用？用于告知其他人以后继承时，需要实现那个方法，如：
+				
+				class BaseAuthentication(object):
+					"""
+					All authentication classes should extend BaseAuthentication.
+					"""
+
+					def authenticate(self, request):
+						"""
+						Authenticate the request and return a two-tuple of (user, token).
+						"""
+						raise NotImplementedError(".authenticate() must be overridden.")
+
+					def authenticate_header(self, request):
+						"""
+						Return a string to be used as the value of the `WWW-Authenticate`
+						header in a `401 Unauthenticated` response, or `None` if the
+						authentication scheme should return `403 Permission Denied` responses.
+						"""
+						pass
+
+			
+			以后自己开发时，如何使用？
+				需求：
+					class BaseMessage(object):
+
+						def send(self):
+							raise NotImplementedError('必须实现send方法')
+
+
+					class Msg(BaseMessage):
+						def send(self):
+							print('发送短信')
+
+
+					class Wechat(BaseMessage):
+						def send(self):
+							print('发送微信')
+
+
+					class Email(BaseMessage):
+						def send(self):
+							print('发送邮件')
+
+
+
+					class DingDing(BaseMessage):
+						def send(self):
+							print('发送钉钉提醒')
+				
+			
+		3. __dict__
+		
+		4. metaclass 
+	
+			
+			
+			
+	整理面试题（今天交给我）
+		
+			
+			
+今日内容：
+	- 爬虫
+		- requests
+		- bs4
+	- 长轮询/轮询
+	
+	
+内容详细：
+	参考博客：https://www.cnblogs.com/wupeiqi/articles/6283017.html
+	
+	需求： 
+		1. 爬取汽车之家新闻咨询
+			- 什么都不带
+		2. 爬抽屉新热榜
+			- 带请求头
+			- 带cookie
+			- 登录：
+				- 获取cookie
+				- 登录：携带cookie做授权
+				- 带cookie去访问
+		3. 爬取GitHub
+			- 带请求头
+			- 带cookie
+			- 请求体中：
+				commit:Sign in
+				utf8:✓
+				authenticity_token:hmGj4oS9ryOrcwoxK83raFqKR4sFG1yC09NxnDJg3B/ycUvCNZFPs4AxTsd8yPbm1F3i38WlPHPcRGQtyR0mmw==
+				login:asdfasdfasdf
+				password:woshiniba8
+		
+		4. 登录拉勾网 
+			- 密码加密
+				- 找js，通过python实现加密方式
+				- 找密文，密码<=>密文
+			
+			- Referer头， 上一次请求地址，可以用于做防盗链。
+		
+	总结：
+		请求头：
+			user-agent
+			referer
+			host
+			cookie
+			特殊请起头，查看上一次请求获取内容。
+				'X-Anit-Forge-Code':...
+				'X-Anit-Forge-Token':...
+		请求体：
+			- 原始数据
+			- 原始数据 + token
+			- 密文
+				- 找算法 
+				- 使用密文
+				
+		套路：
+			- post登录获取cookie，以后携带cookie 
+			- get获取未授权cookie，post登录携带cookie去授权，以后携带cookie 
+		
+				
+	
+	1. requests模块 
+		- 方法
+			requests.get
+			requests.post 
+			requests.put 
+			requests.delete 
+			...
+			requests.request(method='POST')
+		
+		- 参数
+		
+		- session 
+			session = requests.Session()
+			
+			session.get()
+			session.post()
+			
+			...
+	
+		
+	2. BeautifulSoup
+	
+	3. 轮询/长轮询(跟爬虫没有关系)
+		在线投票：最丑的男人
+		
+		- 轮询：每2秒钟发送请求。
+		- 长轮询：最多hang住30s（兼容性好）
+			- 实时
+			- 在线 
+		- websocket实现（兼容性不太好）
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
